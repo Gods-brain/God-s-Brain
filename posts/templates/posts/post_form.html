@@ -1,0 +1,19 @@
+{% extends 'posts/no_footer_base.html' %}
+{% load static %}
+{% block no-footer-content %}
+
+    <div class="container fadeInDown ftco-animated" id="t_form" style="margin: auto; display: grid; place-items: center;">
+      <div id="form" style="margin: 50px;">
+        <form method="post">
+            <legend>MAKE A POST</legend>
+            <fieldset>
+                {% csrf_token %}
+                {{ form.as_p }}
+            </fieldset>
+            <p><button type="submit">Post</button></p>
+        </form>
+      </div>
+    </div>
+
+{% endblock %}
+

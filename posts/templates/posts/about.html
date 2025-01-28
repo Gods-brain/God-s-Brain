@@ -1,0 +1,42 @@
+{% extends 'posts/no_footer_base.html' %}
+{% load static %}
+{% block no-footer-content %}
+
+<div class="col-md-6 d-flex">
+	<div class="img d-flex align-self-stretch align-items-center js-fullheight" style="background-image:url({% static 'images/about.jpg' %});">
+	</div>
+</div>
+<div class="col-md-6 d-flex align-items-center">
+	<div class="text px-4 pt-5 pt-md-0 px-md-4 pr-md-5 ftco-animate">
+	  <h2 class="mb-4">I'm <span>Umekwe Kingsley</span> a Django Web Developer &amp; An Editor</h2>
+	  <p>A hardware engineer dedicated to reflecting Christ in every aspect of my work and life. With the guidance of the Holy Spirit, I aim to achieve the impossible, embracing challenges as opportunities to showcase God's power and grace. My vision is to embody Christ in the world of Tech, using my skills to inspire and make a meaningful impact for His glory.</p>
+	</div>
+</div>
+
+
+<div class="container mt-5">
+	<div class="row d-flex mb-5 contact-info">
+		<div class="col-md-12 mb-4">
+		<h2 class="h3">Contact Information</h2>
+		</div>
+		<div class="w-100"></div>
+		<div class="col-lg-6 col-xl-3 d-flex mb-4">
+			<div class="info bg-light p-4" style="width: 80vw;">
+				<p><span>Address <i class="icon icon-add_location"></i> :</span> Back of Sango Garage, Sango-Ota, Ogun State, Nigeria</p>
+			</div>
+		</div>
+		<div class="col-lg-6 col-xl-3 d-flex mb-4">
+			<div class="info bg-light p-4" style="width: 80vw;">
+				<p><span>Phone <i class="icon icon-phone"></i> :</span> <a href="tel://1234567920">+ 2347 0426 376 59</a></p>
+			</div>
+		</div>
+		<div class="col-lg-6 col-xl-3 d-flex mb-4">
+			<div class="info bg-light p-4" style="width: 80vw;">
+				<p><span>Email <i class="icon icon-envelope"></i> :</span> <a href="#">kingsleyumekwe02@gmail.com</a></p>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+

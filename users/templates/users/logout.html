@@ -1,0 +1,7 @@
+{% extends "users/auth_base.html" %}
+{% block auth_form %}
+
+      <h1>You have Logged out from your Account</h1>
+      <small>Do you want to login again? <a href="{% url 'login' %}">Login</a></small>
+
+{% endblock %}

@@ -1,0 +1,307 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>God's Brain_{{ titles }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="{% static 'css/open-iconic-bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/aos.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.css' %}">
+    <link rel="stylesheet" href="{% static 'css/jquery.timepicker.css' %}">
+
+    
+    <link rel="stylesheet" href="{% static 'css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/icomoon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+
+/* Prevent page from "jumping" on form submission */
+html, body {
+    scroll-behavior: smooth;
+}
+
+
+#form{
+    text-align: center;
+    justify-content: center;
+    margin: auto;
+    width: clamp(300px, 60vw, 500px);
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    box-shadow: 0px 0px 30px black;
+}
+#form legend{
+    color: #fff;
+    background-color: #333;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 5px;
+    text-align: center;
+}
+#form label{
+    display: block;
+}
+#form .helptext{
+    display: block;
+}
+#form ul{
+    display: none;
+    list-style: none;
+}
+#form ul.errorlist{
+    display: block;
+    color: red;
+}
+#form p button{
+    color: #fff;
+    background-color: skyblue;
+    height: 30px;
+    border-radius: 5px;
+    border: 0px;
+}
+small a{
+    text-decoration: none;
+    color: blue;
+    font-weight: bold;
+}
+p button{
+    color: #fff;
+    background-color: #333;
+    height: 30px;
+    border-radius: 5px;
+}
+p button a{
+    text-decoration: none;
+    color: #fff;
+}
+
+input{
+    border-radius: 5px;
+    background-color: transparent;
+}
+
+
+
+#clamp {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    /* Fallback */
+    max-height: calc(1.7em * 4); /* Adjust 1.2em based on line-height */
+    line-height: 1.7em;
+}
+
+
+#search-form{
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+}
+
+#search-input {
+    width: 0;
+    opacity: 0;
+    padding: 0;
+    transition: width 0.3s ease, opacity 0.3s ease;
+}
+
+#search-btn {
+	border: 1px;
+	border-radius: 0px 5px 5px 0px;
+	background-color: lightblue;
+	width: 40px;
+	padding: 5px;
+}
+
+#toggle-search:checked + label + #search-input {
+    width: 280px;
+    opacity: 1;
+    margin-left: 10px;
+}
+
+#toggle-search:checked + label {
+	display: none;
+}
+
+    </style>
+
+  </head>
+  <body style="background-image: url({% static 'images/main_bg.jpg' %}); background-size: cover; background-repeat: no-repeat; background-position: center; background-attachment: fixed;">
+
+<div id="colorlib-page">
+		<a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a>
+		<aside id="colorlib-aside" role="complementary" class="js-fullheight">
+			<nav id="colorlib-main-menu" role="navigation">
+				<ul>
+					<li class="colorlib-active"><a href="{% url 'home' %}">Home</a></li>
+					<li><a href="{% url 'about' %}">About</a></li>
+					{% if user.is_authenticated %}
+					<li><a href="{% url 'post' %}">Post</a></li>
+					<a href="{% url 'profile' user.username %}" class="text-decoration-none">
+						<div>
+							<img src="{{ user.profile.image.url }}" style="width: 50px; height: 50px; border-radius: 50%;">
+							<span><h5>{{ user.username }}</h5></span>
+						</div>
+					</a>
+
+					{% else %}
+                      <li><a href="{% url 'login' %}">Login</a></li>
+                      <li><a href="{% url 'register' %}">Register</a></li>
+                      <div class="mb-4 mt-4">
+						<i class="icon icon-user-circle" style="font-size: 3rem;"></i>
+						<span><h5>Username</h5></span>
+					  </div>
+					{% endif %}
+				</ul>
+			</nav>
+
+			<div class="colorlib-footer">
+				<h1 id="colorlib-logo" class="mb-4"><a href="{% url 'home' %}" style="background-image: url({% static 'images/image_2.jpg' %}); font-family: 'Impact', 'Arial Black', sans-serif; font-size: clamp(1.5rem, 90%, 5rem);">God's <span>Brain</span></a></h1>
+				{% if user.is_authenticated %}
+				<div class="mb-2">
+					<h5><a href="{% url 'logout' %}"><i class="icon icon-user mr-2"></i><b>Logout</b></a></h5>
+				</div>
+				{% endif %}
+				<p class="pfooter"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+			Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This Website is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="{% url 'about' %}" target="_blank">Kingsley</a>
+			<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+			</div>
+		</aside> <!-- END COLORLIB-ASIDE -->
+		<div id="colorlib-main">
+			<section class="ftco-section ftco-no-pt ftco-no-pb">
+	    	<div class="container">
+			<div class="row d-flex">
+				<div class="col-xl-8 py-5 px-md-5">
+
+			<form method="get" action="{% url 'search' %}" id="search-form">
+				<div class="form-group d-flex align-items-center">
+					<input type="checkbox" id="toggle-search" hidden>
+
+					<label for="toggle-search" class="btn p-0 me-2">
+					<span class="icon icon-search" style="font-size: 20px; position: absolute; top: 0; right: 0; padding: 3px;" id="srch"></span>
+					</label>
+
+					<div id="search-input">
+						<label for="toggle-search" class="btn p-0 me-2">
+							<span class="icon icon-cancel" style="font-size: 20px" id="cancel"></span>
+						</label>
+						<input type="search" placeholder="Search User or Title..." name="q" style="padding: 3px; border-radius: 5px 0px 0px 5px;">
+						<button type="submit" id="search-btn">
+							<span class="icon icon-search" style="font-size: 20px"></span>
+						</button>
+					</div>
+				</div>
+			</form>
+
+
+
+					{% if messages %}
+						{% for message in messages %}
+							<div>
+								<p style="padding: 5px; color: green; background-color: lightgreen; height: contain; border-radius: 5px">
+									{{ message }}
+								</p>
+							</div>
+						{% endfor %}
+					{% endif %}
+	    		{% block content %}{% endblock %}
+				</div>
+
+
+
+
+				<div class="col-xl-4 sidebar ftco-animate bg-light pt-5">
+					<div class="sidebar-box ftco-animate">
+						<h3 class="sidebar-heading">Topics</h3>
+					  <ul class="categories">
+						{% for search in to_search %}
+						<li>
+							<a href="{% url 'search' %}?q={{ search.title }}">
+								{{ search.title }} <span>({{ search.views }})</span>
+							</a>
+						</li>
+						{% endfor %}
+					  </ul>
+					</div>
+
+					<div class="sidebar-box ftco-animate">
+					  <h3 class="sidebar-heading">Popular Articles</h3>
+
+					{% for viral_post in viral_posts %}
+					  <div class="block-21 mb-4 d-flex">
+						<a class="blog-img mr-4">
+							<img src="{{ viral_post.author.profile.image.url }}" class="img-fluid">
+						</a>
+						<div class="text">
+						  <h3 class="heading"><a href="{% url 'post_detail' viral_post.id %}">{{ viral_post.title }}</a></h3>
+						  <div class="meta">
+							<div><span class="icon-calendar"></span>{{ viral_post.date_posted|date:"M d, Y" }}</div>
+							<div><a href="{% url 'profile' viral_post.author %}"><span class="icon-person"></span>{{ viral_post.author }}</a></div>
+							<div><span class="icon-eye"></span> {{ viral_post.views }}</div>
+						  </div>
+						</div>
+					  </div>
+					{% endfor %}
+
+					<div class="sidebar-box ftco-animate">
+						<h3 class="sidebar-heading">Reach Me Through</h3>
+					  <ul class="categories">
+						<li><a href="https://www.linkedin.com/in/kingsley-umekwe-897a34286">LinkedIn <span class="icon-linkedin"></span></a></li>
+						<li><a href="https://t.me/+2347042637659">Telegram <span class="icon-telegram"></span></a></li>
+						<li><a href="https://wa.me/+2347042637659">Whatsapp <span class="icon-whatsapp"></span></a></li>
+						<li><a href="https://m.me/100085604649604">Facebook <span class="icon-facebook"></span></a></li>
+					  </ul>
+					</div>
+
+
+					<div class="sidebar-box ftco-animate">
+					  <h3 class="sidebar-heading">About-Site</h3>
+					  <p>This platform empowers Christians to share biblical writings freely, fostering a safe space for faith-based expression without fear of censorship.</p>
+					</div>
+					</div>
+				</div>
+			</div><!-- END COL -->
+	    </section>
+	</div><!-- END COLORLIB-MAIN -->
+  </div><!-- END COLORLIB-PAGE -->
+
+  <!-- loader -->
+  <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+
+
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/jquery-migrate-3.0.1.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/jquery.easing.1.3.js' %}"></script>
+  <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+  <script src="{% static 'js/jquery.stellar.min.js' %}"></script>
+  <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+  <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+  <script src="{% static 'js/aos.js' %}"></script>
+  <script src="{% static 'js/jquery.animateNumber.min.js' %}"></script>
+  <script src="{% static 'js/scrollax.min.js' %}"></script>
+  <script src="{% static 'js/google-map.js' %}"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+
+
+  </body>
+</html>

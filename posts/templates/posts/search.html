@@ -1,0 +1,174 @@
+{% extends 'posts/no_footer_base.html' %}
+{% load static %}
+{% block no-footer-content %}
+
+
+<div class="container fadeInDown ftco-animated" style="margin: auto; display: grid; place-items: center;">
+
+
+    <form method="get" action="{% url 'search' %}" id="search-form" style="margin-top: 10px;">
+        <div class="form-group d-flex align-items-center">
+            <div id="search-input">
+                <input type="search" placeholder="Search User or Title..." name="q" style="padding: 3px; border-radius: 5px 0px 0px 5px;">
+                <button type="submit" id="search-btn">
+                    <span class="icon icon-search" style="font-size: 20px"></span>
+                </button>
+            </div>
+        </div>
+    </form>
+
+
+    <div class="col-md-12 mt-5 fadeInUp ftco-animated">
+        <h3>Total Search Available is ({{posts_num}})</h3>
+    </div>
+
+    <div id="postHead">
+    {% for post in posts %}
+
+    <div class="col-md-12 mt-5 fadeInUp ftco-animated">
+        <div class="blog-entry ftco-animate d-md-flex fadeInUp ftco-animated">
+            <img src="{{ post.author.profile.image.url }}" class="img img-2">
+            <div class="text text-2 pl-md-4">
+                <h3 class="mb-2"><a href="single.html">{{ post.title }}</a></h3>
+                <div class="meta-wrap">
+                    <p class="meta">
+                    <span><i class="icon-calendar mr-2"></i>{{ post.date_posted|date:"M d, Y" }}</span>
+                    <span><a href="{% url 'profile' post.author.username %}"><i class="icon-user-o mr-2"></i>{{ post.author }}</a></span>
+                    <span><i class="icon-eye mr-2"></i>{{ post.views }} views</span>
+                    <span id="like-section-{{ post.pk }}">
+                        <button
+                            onclick="toggleLike({{ post.pk }}, '{% url 'toggle_like' post.pk %}')"
+                            id="like-button-{{ post.pk }}"
+                            style="border: none; background: none; cursor: pointer; outline: none; padding: 0;">
+                            <i class="icon-heart"
+                               id="like-icon-{{ post.pk }}"
+                               style="color: {% if user in post.likes.all %}red{% else %}gray{% endif %}; font-size: 15px;">
+                            </i>
+                        </button>
+                        <span id="like-count-{{ post.pk }}">{{ post.total_likes }} likes</span>
+                        <span><i class="icon-comment2 mr-2"></i><a href="{% url 'post_detail' post.id %}">{{post.total_comments}} Comment</a></span>
+                    </span>
+                    </p>
+                </div>
+                <p class="mb-4" id="clamp">{{ post.content }}</p>
+                <p><a href="{% url 'post_detail' post.id %}" class="btn-custom">View Post <span class="ion-ios-arrow-forward"></span></a></p>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+        <h3>No Result Found</h3>
+    {% endfor %}
+    </div>
+
+    <div style="margin-bottom: 20px">
+        {% if loadMore is True %}
+        <form id="loadMore" style="diplay: flex; margin: auto">
+            <button
+                type="button"
+                class="btn btn-link"
+                style="background-color: orange; border-radius: 3px; border: 1px orange solid; color: white; text-decoration: none"
+                onclick="LoadMore('{{ user }}')">
+                More Posts
+            </button>
+        </form>
+        {% endif %}
+    </div>
+
+
+
+
+</div>
+
+<script>
+    let offset = 2
+
+    function toggleLike(postId, url) {
+
+        const likeIcon = document.getElementById(`like-icon-${postId}`);
+        const likeCountSpan = document.getElementById(`like-count-${postId}`);
+
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                const response = JSON.parse(xhr.responseText);
+
+                likeIcon.style.color = response.liked ? 'red' : 'gray';
+                likeCountSpan.textContent = `${response.total_likes} likes`;
+
+            } else if (xhr.status === 403) {
+                alert('You need to log in to like this post.');
+            }
+        };
+
+        xhr.send();
+    }
+
+    function LoadMore(username) {
+        const load_more = document.getElementById("loadMore");
+        const postHead = document.getElementById('postHead');
+        const xhr1 = new XMLHttpRequest();
+
+        xhr1.open('GET', `/load_post/?username=${username}&offset=${offset}`, true);
+
+        xhr1.onload = function () {
+            if (xhr1.status === 200) {
+                const response = JSON.parse(xhr1.responseText);
+
+                response.more_posts.forEach(function (post) {
+                    const postDiv = document.createElement('div');
+
+                    postDiv.innerHTML = `
+                        <div class="col-md-12 mt-5 fadeInUp ftco-animated">
+                            <div class="blog-entry ftco-animate d-md-flex fadeInUp ftco-animated">
+                                <img src="${post.image}" class="img img-2">
+                                <div class="text text-2 pl-md-4">
+                                    <h3 class="mb-2">
+                                        <a href="/post/${post.id}/toggle-like">${post.title}</a>
+                                    </h3>
+                                    <div class="meta-wrap">
+                                        <p class="meta">
+                                            <span><i class="icon-calendar mr-2"></i>${post.date_posted}</span>
+                                            <span><a href="/profile/${username}"><i class="icon-user-o mr-2"></i>${post.author}</a></span>
+                                            <span><i class="icon-eye mr-2"></i>${post.views} views</span>
+                                            <span id="like-section-${post.id}">
+                                                <button
+                                                    onclick="toggleLike(${post.id}, '/post/${post.id}/toggle-like/')"
+                                                    id="like-button-${post.id}"
+                                                    style="border: none; background: none; cursor: pointer; outline: none; padding: 0;">
+                                                    <i class="icon-heart"
+                                                       id="like-icon-${post.id}"
+                                                       style="color: ${post.is_liked ? 'red' : 'gray'}; font-size: 15px;">
+                                                    </i>
+                                                </button>
+                                                <span id="like-count-${post.id}">${post.total_likes} likes</span>
+                                                <span><i class="icon-comment2 mr-2"></i><a href="/post/${post.id}">${post.total_comments} Comment</a></span>
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <p class="mb-4" id="clamp">${post.content}</p>
+                                    <p><a href="/post/${post.id}" class="btn-custom">View Post<span class="ion-ios-arrow-forward"></span></a></p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    postHead.appendChild(postDiv);
+                });
+
+                offset += 2;
+                load_more.style.display = response.loadMore ? 'flex' : 'none';
+            } else if (xhr1.status === 403) {
+                load_more.style.display = 'none';
+            }
+        };
+
+        xhr1.send();
+    };
+</script>
+
+
+{% endblock %}
+

@@ -1,0 +1,18 @@
+{% extends 'posts/no_footer_base.html' %}
+{% load static %}
+{% block no-footer-content %}
+<div class="container fadeInDown ftco-animated" id="t_form" style="margin: auto; display: grid; place-items: center;">
+    <div id="form" style="margin: 50px;">
+        <form method="post">
+            {% csrf_token %}
+          <h3>Are you sure want to delete {% if object.title %} "{{object.title}}" {% else %} Comment {% endif %}?</h3>
+          <p>Click the Delete button if really want to delete it; if there a change of mind click Cancel to go back</p>
+          <div class="meta-wrap">
+              <a href="{% url 'post_detail' pk=post_pk %}" style="width: 25px; border:1px; background-color: lightgrey; border-style: solid; border-radius: 5px; color: white; padding: 10px">Cancle</a>
+              <button type="submit" style="border:1px; background-color: red; border-style: solid; border-radius: 5px; color: white; padding: 5px">Delete</button>
+          </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

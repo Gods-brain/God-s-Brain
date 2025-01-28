@@ -1,0 +1,14 @@
+{% extends "users/auth_base.html" %}
+{% block auth_form %}
+
+        <form method="post">
+            <legend> Create An Account</legend>
+            <fieldset>
+                {% csrf_token %}
+                {{ form.as_p }}
+            </fieldset>
+            <button type="submit">Sign Up</button>
+        </form>
+          <small>Do you already have an Account? <a href="{% url 'login' %}">Login</a></small>
+
+{% endblock %}

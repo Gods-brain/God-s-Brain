@@ -1,0 +1,194 @@
+{% extends 'posts/no_footer_base.html' %}
+{% load static %}
+{% block no-footer-content %}
+
+
+<div class="container fadeInDown ftco-animated" style="margin: auto; display: grid; place-items: center;">
+    <div class="col-md-12">
+        <div class="blog-entry ftco-animate d-md-flex fadeInUp ftco-animated">
+            <img src="{{ post.author.profile.image.url }}" class="img img-2">
+            <div class="text text-2 pl-md-4">
+                <h3 class="mb-2">{{ post.title }}</h3>
+                <div class="meta-wrap">
+                    <p class="meta">
+                        <span><i class="icon-calendar mr-2"></i>{{ post.date_posted|date:"M d, Y" }}</span>
+                        <span><a href="{% url 'profile' post.author.username %}"><i class="icon-user-o mr-2"></i>{{ post.author }}</a></span>
+                        <span><i class="icon-eye mr-2"></i>{{ post.views }} views</span>
+                        <span id="like-section-{{ post.pk }}">
+                            <button
+                                onclick="toggleLike({{ post.pk }}, '{% url 'toggle_like' post.pk %}')"
+                                id="like-button-{{ post.pk }}"
+                                style="border: none; background: none; cursor: pointer; outline: none; padding: 0;">
+                                <i class="icon-heart"
+                                   id="like-icon-{{ post.pk }}"
+                                   style="color: {% if user in post.likes.all %}red{% else %}gray{% endif %}; font-size: 15px;">
+                                </i>
+                            </button>
+                            <span id="like-count-{{ post.pk }}">{{ post.total_likes }} likes</span>
+                            <span><i class="icon-comment2 mr-2"></i><a href="{% url 'post_detail' post.id %}">{{total_comments}} Comment</a></span>
+                        </span>
+                    </p>
+                </div>
+                <p class="mb-4">{{ post.content }}</p>
+
+                {% if post.author == user %}
+                <div class="meta-wrap">
+                    <a href="{% url 'post_update' post.id %}" class="btn btn-sm btn-primary">Update</a>
+                    <a href="{% url 'post_delete' post.id %}" class="btn btn-sm btn-danger">Delete</a>
+                </div>
+                {% endif %}
+
+                    <!-- Comments Section -->
+                <div class="comments" id="comments-section">
+                    <h3 class="mb-4">Comments ({{ total_comments }})</h3>
+                    <div style="max-width: 500px; overflow: auto;">
+                        <div id="commentHead">
+                            {% for comment in comments_to_display %}
+                                <div class="card mb-3 border-0 shadow-sm">
+                                    <div class="d-flex align-items-start p-3">
+                                        <img src="{{ comment.author.profile.image.url }}" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                                        <div>
+                                            <h6 class="fw-bold mb-0">{{ comment.author }}</h6>
+                                            <p class="mb-0 ml-2">{{ comment.content }}</p>
+                                        </div>
+                                    </div>
+                                    {% if comment.author == user %}
+                                        <a href="{% url 'comment_delete' pk=comment.pk %}" class="text-danger" title="Delete Comment" style="margin-left: 10px;">
+                                            <i class="icon-trash"></i>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        {% if more_comment is True %}
+                        <form id="loadMore">
+                            <button
+                                type="button"
+                                class="btn btn-link"
+                                style="background-color: orange; border-radius: 3px; border: 1px orange solid; color: white; text-decoration: none"
+                                onclick="LoadMore({{post.id}})">
+                                View More
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+
+
+                </div>
+
+
+                <!-- Comment Form -->
+                {% if user.is_authenticated %}
+                <div class="mt-4">
+                    <form method="POST" class="d-flex align-items-center">
+                        {% csrf_token %}
+                        <input
+                            type="text"
+                            class="form-control me-2 rounded-pill"
+                            name="content"
+                            placeholder="Write your comment here..."
+                            style="box-shadow: none;">
+                        <button class="btn btn-outline-primary rounded-circle" type="submit">
+                            <span class="icon-paper-plane"></span> <!-- IcoMoon send icon -->
+                        </button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="mt-4" style="pointer-events:none; opacity:0.4; cusor">
+                    <form class="d-flex align-items-center">
+                        {% csrf_token %}
+                        <input
+                            type="text"
+                            class="form-control me-2 rounded-pill"
+                            name="content"
+                            placeholder="Write your comment here..."
+                            style="box-shadow: none; pointer-events: none;">
+                        <button class="btn btn-outline-primary rounded-circle" type="submit">
+                            <span class="icon-paper-plane"></span>
+                        </button>
+                    </form>
+                </div>
+                <small>You Need <a href="{% url 'login' %}" style="color: orange;">Login</a> To Comment On This Post</small>
+                {% endif %}
+
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+<script>
+    let offset = 2
+
+    function toggleLike(postId, url) {
+        const likeIcon = document.getElementById(`like-icon-${postId}`);
+        const likeCountSpan = document.getElementById(`like-count-${postId}`);
+
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                const response = JSON.parse(xhr.responseText);
+
+                likeIcon.style.color = response.liked ? 'red' : 'gray';
+                likeCountSpan.textContent = `${response.total_likes} likes`;
+
+            } else if (xhr.status === 403) {
+                alert('You need to log in to like this post.');
+            }
+        };
+
+        xhr.send();
+    }
+
+
+    function LoadMore(postId) {
+    const commentHead = document.getElementById('commentHead');
+    const loadMoreBtn = document.getElementById('loadMore');
+
+    const xhr1 = new XMLHttpRequest();
+    xhr1.open('GET', `/load_more/?pk=${postId}&offset=${offset}`, true);
+
+    xhr1.onload = function () {
+        if (xhr1.status === 200) {
+            const response = JSON.parse(xhr1.responseText);
+            response.comments_to_display.forEach(function (comment) {
+                const commentDiv = document.createElement('div');
+                commentDiv.innerHTML = `
+                    <div class="card mb-3 border-0 shadow-sm">
+                        <div class="d-flex align-items-start p-3">
+                            <img src="${comment.image}" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                            <div>
+                                <h6 class="fw-bold mb-0">${comment.author}</h6>
+                                <p class="mb-0 ml-2">${comment.content}</p>
+                            </div>
+                        </div>
+                        ${comment.is_author ? `
+                            <a href="/comment/${comment.pk}/delete" class="text-danger" title="Delete Comment" style="margin-left: 10px;">
+                                <i class="icon-trash"></i>
+                            </a>` : ''}
+                    </div>`;
+                commentHead.appendChild(commentDiv);
+                loadMoreBtn.style.display = response.more_comment ? 'block' : 'none';
+            });
+            offset += 2;
+        } else if (xhr1.status === 403) {
+            loadMoreBtn.style.display = 'none';
+        };
+    };
+    xhr1.send();
+}
+
+</script>
+
+
+
+{% endblock %}
+
+

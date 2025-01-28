@@ -1,0 +1,15 @@
+{% extends "users/auth_base.html" %}
+{% block auth_form %}
+
+        <form method="post">
+            <legend>LOG IN</legend>
+            <fieldset>
+                {% csrf_token %}
+                {{ form.as_p }}
+            </fieldset>
+            <button type="submit">Login</button>
+        </form>
+          <small>Don't have an Account? <a href="{% url 'register' %}">Sign Up</a></small>
+          <p><a href="{% url 'password_reset' %}" style="text-decoration: none">Forget Password</a></p>
+
+{% endblock %}
