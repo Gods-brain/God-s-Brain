@@ -110,6 +110,9 @@
     function LoadMore(username) {
         const load_more = document.getElementById("loadMore");
         const postHead = document.getElementById('postHead');
+        const loader = document.getElementById("ftco-loader");
+
+        loader.classList.add("show");
         const xhr1 = new XMLHttpRequest();
 
         xhr1.open('GET', `/load_post/?username=${username}&offset=${offset}`, true);
@@ -156,6 +159,7 @@
                         </div>
                     `;
                     postHead.appendChild(postDiv);
+                    loader.classList.remove("show");
                 });
 
                 offset += 2;
@@ -163,6 +167,10 @@
             } else if (xhr1.status === 403) {
                 load_more.style.display = 'none';
             }
+        };
+
+        xhr1.onerror = function () {
+            loader.classList.remove("show");
         };
 
         xhr1.send();

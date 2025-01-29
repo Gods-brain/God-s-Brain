@@ -151,6 +151,9 @@
     function LoadMore(postId) {
     const commentHead = document.getElementById('commentHead');
     const loadMoreBtn = document.getElementById('loadMore');
+    const loader = document.getElementById("ftco-loader");
+
+    loader.classList.add("show");
 
     const xhr1 = new XMLHttpRequest();
     xhr1.open('GET', `/load_more/?pk=${postId}&offset=${offset}`, true);
@@ -176,12 +179,18 @@
                     </div>`;
                 commentHead.appendChild(commentDiv);
                 loadMoreBtn.style.display = response.more_comment ? 'block' : 'none';
+                loader.classList.remove("show");
             });
             offset += 2;
         } else if (xhr1.status === 403) {
             loadMoreBtn.style.display = 'none';
         };
     };
+
+    xhr1.onerror = function () {
+        loader.classList.remove("show");
+    };
+
     xhr1.send();
 }
 
