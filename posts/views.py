@@ -179,7 +179,7 @@ class SearchResult(ListView):
         context['posts'] = posts_in_page[:3]
         context['loadMore'] = len(context['postss']) > len(context['posts'])
         context['titles'] = 'Search Results'
-        context['user'] = self.request.GET.get('q', '')
+        context['search'] = self.request.GET.get('q', '')
         for post in posts_in_page:
             post.total_comments = Comment.objects.filter(post=post).count()
         return context
