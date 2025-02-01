@@ -157,7 +157,12 @@ input{
 				<h1 id="colorlib-logo" class="mb-4"><a href="{% url 'home' %}" style="background-image: url({% static 'images/image_2.jpg' %}); font-family: 'Impact', 'Arial Black', sans-serif; font-size: clamp(1.5rem, 90%, 5rem);">God's <span>Brain</span></a></h1>
 				{% if user.is_authenticated %}
 				<div class="mb-2">
-					<h5><a href="{% url 'logout' %}"><i class="icon icon-user mr-2"></i><b>Logout</b></a></h5>
+					<form action="{% url 'logout' %}" method='post'>
+					    {% csrf_token %}
+					    <button type='submit' class="btn btn-sm btn-danger">
+					        <h5 style='color: white'><i class="icon icon-user mr-2"></i><b>Logout</b></h5>
+					    </button>
+				    </form>
 				</div>
 				{% endif %}
 				<p class="pfooter"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
